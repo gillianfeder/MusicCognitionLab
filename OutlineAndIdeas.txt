@@ -1,0 +1,97 @@
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    GENERAL OUTLINE OF THE SEQUENCE GENERATOR FOR THE MUSIC COGNITION LAB 
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+CONSTRUCTION BREAKDOWN
+    SEQUENCE
+        built up of two vectors of notes: 1 represents meter 1, the other
+        represents meter two
+        Varies by sequence:
+            for each sequence, the range of jitter of the second meter is unique
+        need constants for:
+            int Regularity of meter 1 (how frequent are the clicks)
+            int midpoint between metronome 1 clicks
+            how long the sequence is in total
+                determines how many clicks total and thus how many notes per 
+                sequence, and 1/2 as many per vector
+        Member Variables
+            vector Note meter 1, meter 2, complete sequence
+            struct Note 
+                char representation (for printing) //diff for the two diff metronomes
+                int distFromMidpoint  //random num in jitterRange that places met2 a certain dist from actual midpoint
+                int distFrom 0.0 //can be calculated by node num (in array)*distance for every 2 clicks +/- dist from midpoint
+    FUNCTIONS 
+        constructor
+            takes in jitter amount and sets to member variable 
+        buildMet1
+        buildMet2
+        mergeMetronomes
+
+Compile with: 
+    g++ -Wall -Wextra -Werror -c main.cpp SequenceGenerator.cpp 
+    g++ -o main.exe main.o SequenceGenerator.o
+    
+    
+main 
+
+for (int i = 0; i < (int)arrayOfJitRanges.size(); i++) 
+{
+    float inductionLength = 5;
+    SequenceGenerator next(arrayOfJitRanges[i], inductionLength);
+    next.buildMet1();
+    
+    next.buildMet2Fixed(); //jitter exactly the jit range every time
+    next.mergeMetronomes();
+
+    string vec = next.printVector();
+    cout << "Jitter Range: " << arrayOfJitRanges[i] << "%, " << "Fixed, "<< "Induction Length: " << inductionLength 
+    << "\n" << vec << endl;
+    cout<<endl;
+}
+
+for (int i = 0; i < (int)arrayOfJitRanges.size(); i++) //Induction of 5, Varied
+{
+    float inductionLength = 5;
+    SequenceGenerator next(arrayOfJitRanges[i], inductionLength);
+    next.buildMet1();
+    
+    next.buildMet2Varied(); //jitter any random number in the range
+
+    next.mergeMetronomes();
+    //cout << "here"<<endl;
+
+    string vec = next.printVector();
+    cout << "Jitter Range: " << arrayOfJitRanges[i] << "%, " << "Varied, "<< "Induction Length: " << inductionLength 
+    << "\n" << vec << endl;
+    cout<<endl;
+}
+
+for (int i = 0; i < (int)arrayOfJitRanges.size(); i++) //No Induction, Fixed
+{
+    float inductionLength = 0;
+    SequenceGenerator next(arrayOfJitRanges[i], inductionLength);
+    
+    next.buildMet1();
+    next.buildMet2Fixed(); //jitter exactly the jit range every time
+    next.mergeMetronomes();
+
+    string vec = next.printVector();
+    cout << "Jitter Range: " << arrayOfJitRanges[i] << "%, " << "Fixed, "<< "Induction Length: " << inductionLength 
+    << "\n" << vec << endl;
+    cout<<endl;
+}
+
+for (int i = 0; i < (int)arrayOfJitRanges.size(); i++) //No Induction, Varied
+{
+    float inductionLength = 0;
+    SequenceGenerator next(arrayOfJitRanges[i], inductionLength);
+    
+    next.buildMet1();
+    next.buildMet2Varied(); //jitter any random number in the range
+    next.mergeMetronomes();
+
+    string vec = next.printVector();
+    cout << "Jitter Range: " << arrayOfJitRanges[i] << "%, " << "Varied, "<< "Induction Length: " << inductionLength 
+    << "\n" << vec << endl;
+    cout<<endl;
+}
